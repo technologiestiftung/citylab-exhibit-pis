@@ -6,60 +6,100 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-# {repo-template}
+# CityLAB Exhibit VLC Video Looper
 
-## TODO (after you generated the repo)
+This project is a simple video looper for VLC player. It is intended to be used on a Raspberry Pi 4 with the Raspberry Pi OS (64-Bit) installed in our exhibition here at the CityLAB.
 
-- [ ] Review the content of the README.md and adjust to your liking
-- [ ] Read the README.md till the end and adjust the content licensing,
-      logos, etc (I know you stopped at tbd...)
-- [ ] Adjust the file [.github/CODEOWNERS](./.github/CODEOWNERS)
-- [ ] Adjust the files under [.github/ISSUE_TEMPLATE](./.github/ISSUE_TEMPLATE)
-- [ ] If you use staging and main branches use this template for [.github/renovate.json](./.github/renovate.json)
+Features:
 
-```json
-{
-	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["github>technologiestiftung/renovate-config"],
-	"baseBranches": ["staging"]
-}
-```
+- [x] Raspi Desktop Environment for easy access
+- [x] SSH access as well
+- [x] Auto-mount USB flash drives
 
-- [ ] Do you want to honor all kinds of contributions? Use [all-contributors](https://allcontributors.org/)
+Todo:
 
-```bash
-npx all-contributors-cli check
-npx all-contributors-cli add ff6347 doc
-```
-
-You can use it on GitHub just by commenting on PRs and issues:
-
-```plain
-@all-contributors please add @ff6347 for infrastructure, tests and code
-```
-
-- [ ] Add your project description
-- [ ] Get fancy shields at https://shields.io
+- [ ] Website in kiosk mode
+- [ ] Touch displays
+- [ ] Ready made image for faster installation
 
 ## Prerequisites
 
-tbd...
+- Raspberry Pi 4
+- Raspberry Pi Imager
+- SD Card (16GB or more)
 
 ## Installation
 
-tbd...
+Flash your SD Card with the Raspberry Pi OS (64-Bit)
+Make sure to:
 
-## Usage or Deployment
+- Set a new user name and password
+- Set a hostname
+- Set you WiFi credentials
+- Add your ssh key (if you have one) and enable ssh
 
-tbd...
+After the first boot run the following commands to customize your installation
+
+```bash
+sudo apt-get update
+sudo apt-get install --yes vim autofs vlc
+```
+
+To allow the Pi to auto-mount USB flash drives run the following steps:
+
+```bash
+sudo vim /etc/auto.usb
+## add at the end
+* -fstype=auto,sync,ro,nodev,nosuid,umask=000 :/dev/&
+## save and exit
+sudo vim /etc/auto.usb
+## add
+* -fstype=auto,sync,ro,nodev,nosuid,umask=000 :/dev/&
+## save and exit
+sudo systemctl restart autofs
+sudo vim /etc/udev/rules.d/10-automount.rules
+## add
+ACTION=="add", KERNEL=="sd*[!0]", SUBSYSTEM=="block", RUN+="/usr/bin/systemd-mount --no-block --automount=yes --collect /dev/%k /mnt/%k"
+
+ACTION=="remove", KERNEL=="sd*[!0]", SUBSYSTEM=="block", ENV{SYSTEMD_WANTS}+="umount.target", RUN+="/usr/bin/systemd-mount --umount --no-block --collect /mnt/%k"
+## save and exit
+sudo udevadm control --reload-rules
+sudo reboot
+
+```
+
+To enable VLC player on startup do run the following commands.
+
+Clone this repo
+
+```bash
+git clone https://github.com/technologiestiftung/vlc-video-looper.git ~/Desktop
+```
+
+Now we setup vlc to play after boot into the desktop
+
+```bash
+vim ~/.bashrc
+## add
+export XDG_CONFIG_HOME=$HOME/.config
+## save and exit
+
+mkdir -p ~/.config/autostart
+vim ~/.config/autostart/display.destktop
+## add and replace with your username
+
+[Desktop Entry]
+Name=cvlc
+Exec=/home/<YOUR-USER-NAME>/Desktop/vlc-video-looper/looper.sh
+## save and exit
+
+chmod +x ~/.config/autostart/display.destktop
+chmod +x ~/Desktop/vlc-video-looper/looper.sh
+```
 
 ## Development
 
-tbd...
-
-## Tests
-
-tbd...
+- Edit ~/Desktop/vlc-video-looper/looper.sh
 
 ## Contributing
 
@@ -83,12 +123,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
-
-## Content Licensing
-
-Texts and content available as [CC BY](https://creativecommons.org/licenses/by/3.0/de/).
-
-Illustrations by {MARIA_MUSTERFRAU}, all rights reserved.
 
 ## Credits
 
