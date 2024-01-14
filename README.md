@@ -6,7 +6,21 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-# CityLAB Exhibit VLC Video Looper
+# CityLAB Exhibit Pis
+
+## FullPageOS
+
+Using the FullPageOS project (https://github.com/guysoft/FullPageOS) to display pages. Use the Raspberry Pi Imager to install the FullPageOS. Then follow the instructions in the repo to change default page and wifi.
+
+Only change needed is to run the following command if your default user is not called `pi`.
+
+```bash
+sudo ln -s /home/<YOUR USER NAME> /home/pi
+```
+
+See https://github.com/guysoft/FullPageOS/issues/464#issuecomment-1552238176
+
+## VLC Video Looper
 
 This project is a simple video looper for VLC player. It is intended to be used on a Raspberry Pi 4 with the Raspberry Pi OS (64-Bit) installed in our exhibition here at the CityLAB.
 
