@@ -111,6 +111,59 @@ chmod +x ~/.config/autostart/display.destktop
 chmod +x ~/Desktop/vlc-video-looper/looper.sh
 ```
 
+### Autologin
+
+We had some issues configuring the autologin. normally this should work using `sudo raspi-config` and then selecting `System Options` -> `Boot / Auto Login` -> `Desktop Autologin`.
+
+If this does not work you can try the following:
+
+#### Reinstall lxsession
+
+```bash
+sudo -apt-get install --reinstall lxsession
+```
+
+Make sure that your autolgin.conf has these entries (replace `<USERNAME>` with your users name):
+
+```bash
+sudo vim /etc/systemd/system/getty@tty1.service.d/autologin.conf
+```
+
+```conf
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin <USERNAME> --noclear %I $TERM
+```
+
+#### Configure your display manager
+
+```bash
+sudo vim /etc/lightdm/lightdm.conf
+```
+
+Make sure to replace `<USERNAME>` with your users name.
+
+```conf
+[Seat:*]
+
+greeter-session=pi-greeter-wayfire
+greeter-hide-users=false
+display-setup-script=/usr/share/dispsetup.sh
+autologin-user=<USERNAME>
+autologin-user-timeout=0
+
+# The two setting below did create problems for us
+# user-session=LXDE-pi-x
+# autologin-session=LXDE-pi-wayfire
+# If they are present remove them
+
+fallback-test=/usr/bin/xfallback.sh
+fallback-session=LXDE-pi-x
+fallback-greeter=pi-greeter
+```
+
+
+
 ## Development
 
 - Edit ~/Desktop/vlc-video-looper/looper.sh
