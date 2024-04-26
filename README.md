@@ -62,9 +62,6 @@ sudo apt-get install --yes vim autofs vlc
 To allow the Pi to auto-mount USB flash drives run the following steps:
 
 ```bash
-sudo vim /etc/auto.usb
-## add at the end
-* -fstype=auto,sync,ro,nodev,nosuid,umask=000 :/dev/&
 ## save and exit
 sudo vim /etc/auto.usb
 ## add
@@ -161,8 +158,6 @@ fallback-test=/usr/bin/xfallback.sh
 fallback-session=LXDE-pi-x
 fallback-greeter=pi-greeter
 ```
-
-
 
 ## Development
 
