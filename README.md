@@ -74,6 +74,11 @@ ACTION=="add", KERNEL=="sd*[!0]", SUBSYSTEM=="block", RUN+="/usr/bin/systemd-mou
 
 ACTION=="remove", KERNEL=="sd*[!0]", SUBSYSTEM=="block", ENV{SYSTEMD_WANTS}+="umount.target", RUN+="/usr/bin/systemd-mount --umount --no-block --collect /mnt/%k"
 ## save and exit
+
+sudo vim /etc/auto.master
+## add
+/media /etc/auto.usb --timeout=2,sync,nodev,nosuid
+## save and exit
 sudo udevadm control --reload-rules
 sudo reboot
 
