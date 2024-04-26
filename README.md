@@ -99,7 +99,7 @@ export XDG_CONFIG_HOME=$HOME/.config
 ## save and exit
 
 mkdir -p ~/.config/autostart
-vim ~/.config/autostart/display.destktop
+vim ~/.config/autostart/display.desktop
 ## add and replace with your username
 
 [Desktop Entry]
@@ -107,7 +107,7 @@ Name=cvlc
 Exec=/home/<YOUR-USER-NAME>/Desktop/vlc-video-looper/looper.sh
 ## save and exit
 
-chmod +x ~/.config/autostart/display.destktop
+chmod +x ~/.config/autostart/display.desktop
 chmod +x ~/Desktop/vlc-video-looper/looper.sh
 ```
 
