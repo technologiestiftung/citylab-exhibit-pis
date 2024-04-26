@@ -117,7 +117,7 @@ If this does not work you can try the following:
 #### Reinstall lxsession
 
 ```bash
-sudo -apt-get install --reinstall lxsession
+sudo apt-get install --reinstall lxsession
 ```
 
 Make sure that your autolgin.conf has these entries (replace `<USERNAME>` with your users name):
