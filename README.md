@@ -20,153 +20,21 @@ sudo ln -s /home/<YOUR USER NAME> /home/pi
 
 See https://github.com/guysoft/FullPageOS/issues/464#issuecomment-1552238176
 
-## VLC Video Looper
-
-This project is a simple video looper for VLC player. It is intended to be used on a Raspberry Pi 4 with the Raspberry Pi OS (64-Bit) installed in our exhibition here at the CityLAB.
-
-Features:
-
-- [x] Raspi Desktop Environment for easy access
-- [x] SSH access as well
-- [x] Auto-mount USB flash drives
-
-Todo:
-
-- [ ] Website in kiosk mode
-- [ ] Touch displays
-- [ ] Ready made image for faster installation
-
-## Prerequisites
-
-- Raspberry Pi 4
-- Raspberry Pi Imager
-- SD Card (16GB or more)
-
-## Installation
-
-Flash your SD Card with the Raspberry Pi OS (64-Bit)
-Make sure to:
-
-- Set a new user name and password
-- Set a hostname
-- Set you WiFi credentials
-- Add your ssh key (if you have one) and enable ssh
-
-After the first boot run the following commands to customize your installation
+To set the page the Pi should display, edit the file `/boot/fullpageos.txt`. You can do this on the mounted SD card or after booting the Pi by running the following command:
 
 ```bash
-sudo apt-get update
-sudo apt-get install --yes vim autofs vlc
+sudo vim /boot/fullpageos.txt
+# change the URL to the one you want to display
+# save and exit
 ```
 
-To allow the Pi to auto-mount USB flash drives run the following steps:
+## Video Looper
 
-```bash
-## save and exit
-sudo vim /etc/auto.usb
-## add
-* -fstype=auto,sync,ro,nodev,nosuid,umask=000 :/dev/&
-## save and exit
-sudo systemctl restart autofs
-sudo vim /etc/udev/rules.d/10-automount.rules
-## add
-ACTION=="add", KERNEL=="sd*[!0]", SUBSYSTEM=="block", RUN+="/usr/bin/systemd-mount --no-block --automount=yes --collect /dev/%k /mnt/%k"
+Download the latest image from https://videolooper.de/#download_latest and use the Pi Imager to install it on the SD card.
 
-ACTION=="remove", KERNEL=="sd*[!0]", SUBSYSTEM=="block", ENV{SYSTEMD_WANTS}+="umount.target", RUN+="/usr/bin/systemd-mount --umount --no-block --collect /mnt/%k"
-## save and exit
+Make sure to alter the hostname, password and wifi settings in the settings tab of Pi Imager. Also in services add your ssh key if you have one (if not use password login) and enable ssh.
 
-sudo vim /etc/auto.master
-## add
-/media /etc/auto.usb --timeout=2,sync,nodev,nosuid
-## save and exit
-sudo udevadm control --reload-rules
-sudo reboot
-
-```
-
-To enable VLC player on startup do run the following commands.
-
-Clone this repo
-
-```bash
-git clone https://github.com/technologiestiftung/vlc-video-looper.git ~/Desktop/vlc-video-looper
-```
-
-Now we setup vlc to play after boot into the desktop
-
-```bash
-vim ~/.bashrc
-## add
-export XDG_CONFIG_HOME=$HOME/.config
-## save and exit
-
-mkdir -p ~/.config/autostart
-vim ~/.config/autostart/display.desktop
-## add and replace with your username
-
-[Desktop Entry]
-Name=cvlc
-Exec=/home/<YOUR-USER-NAME>/Desktop/vlc-video-looper/looper.sh
-## save and exit
-
-chmod +x ~/.config/autostart/display.desktop
-chmod +x ~/Desktop/vlc-video-looper/looper.sh
-```
-
-### Autologin
-
-We had some issues configuring the autologin. normally this should work using `sudo raspi-config` and then selecting `System Options` -> `Boot / Auto Login` -> `Desktop Autologin`.
-
-If this does not work you can try the following:
-
-#### Reinstall lxsession
-
-```bash
-sudo apt-get install --reinstall lxsession
-```
-
-Make sure that your autolgin.conf has these entries (replace `<USERNAME>` with your users name):
-
-```bash
-sudo vim /etc/systemd/system/getty@tty1.service.d/autologin.conf
-```
-
-```conf
-[Service]
-ExecStart=
-ExecStart=-/sbin/agetty --autologin <USERNAME> --noclear %I $TERM
-```
-
-#### Configure your display manager
-
-```bash
-sudo vim /etc/lightdm/lightdm.conf
-```
-
-Make sure to replace `<USERNAME>` with your users name.
-
-```conf
-[Seat:*]
-
-greeter-session=pi-greeter-wayfire
-greeter-hide-users=false
-display-setup-script=/usr/share/dispsetup.sh
-autologin-user=<USERNAME>
-autologin-user-timeout=0
-
-# The two setting below did create problems for us
-# user-session=LXDE-pi-x
-# autologin-session=LXDE-pi-wayfire
-# If they are present remove them
-
-fallback-test=/usr/bin/xfallback.sh
-fallback-session=LXDE-pi-x
-fallback-greeter=pi-greeter
-```
-
-## Development
-
-- Edit ~/Desktop/vlc-video-looper/looper.sh
+After booting the Pi, you can add videos to the USB stick and they will be played in a loop.
 
 ## Contributing
 
