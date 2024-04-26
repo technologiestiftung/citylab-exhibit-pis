@@ -84,7 +84,7 @@ To enable VLC player on startup do run the following commands.
 Clone this repo
 
 ```bash
-git clone https://github.com/technologiestiftung/vlc-video-looper.git ~/Desktop
+git clone https://github.com/technologiestiftung/vlc-video-looper.git ~/Desktop/vlc-video-looper
 ```
 
 Now we setup vlc to play after boot into the desktop
